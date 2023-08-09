@@ -1,18 +1,3 @@
-
-> [Backlog](https://trello.com/c/YqJ9gX4o)
-
-> [To Do](https://trello.com/c/OC0TxUVn)
-
-> [Doing](https://trello.com/c/TFnbpAFl)
-
-> [Code Review](https://trello.com/c/nszqDke2)
-
-> [Testing](https://trello.com/c/vGnNYlwl)
-
-> [Done](https://trello.com/c/eGFUb3y9)
-
-
-
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
