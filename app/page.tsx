@@ -1,10 +1,8 @@
-import { SingInButton, SingOutButton } from './component/buttons';
 import { redirect } from 'next/navigation';
 
 import { getSession } from 'next-auth/react';
 
-import { HomeIcon, ChartBarIcon, UsersIcon } from '@heroicons/react/24/outline';
-import { BottomNav } from './component/nav';
+import { PlusIcon } from '@heroicons/react/24/outline';
 export default async function Home(session: any) {
   if (!session) {
     return redirect('/api/auth/signin');
@@ -12,13 +10,12 @@ export default async function Home(session: any) {
 
   return (
     <>
-      <nav className='bg-gray-800'>
+      {/* <nav className='bg-gray-800'>
         <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
           <div className='relative flex items-center justify-between h-16'>
             <div className='flex-1 flex items-center justify-center sm:items-stretch sm:justify-start'>
               <div className='flex-shrink-0 flex items-center text-lg'>
-                💹
-                {/* <Image src='/vercel.svg' alt='Vercel Logo' width={72} height={16} /> */}
+                
                 <p className=' text-slate-200'>Logo</p>
               </div>
 
@@ -57,10 +54,25 @@ export default async function Home(session: any) {
             </div>
           </div>
         </div>
-      </nav>
-      <h1 className='text-4xl text-center'>Home</h1>
+      </nav> */}
+      <div className='card w-96 bg-primary text-primary-content m-auto my-4'>
+        <div className='card-body'>
+          <h2 className='card-title'>Card title!</h2>
+          <p>If a dog chews shoes whose shoes does he choose?</p>
+          <div className='card-actions justify-end'>
+            <button className='btn'>Buy Now</button>
+          </div>
+        </div>
+      </div>
+      <button
+        onClick={ () => console.log('click')})
+        
+        className='fixed z-90 bottom-10 right-8 bg-primary w-14 h-14 rounded-full drop-shadow-lg flex justify-center items-center text-white hover:bg-indigo-800 hover:drop-shadow-2xl hover:animate-bounce'
+      >
+        <PlusIcon className='w-5 h-5' />
+      </button>
     </>
-  );
+      );
 }
 
 export async function getServerSideProps(context: any) {
