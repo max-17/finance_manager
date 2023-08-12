@@ -1,29 +1,71 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
+
 export default function ExpenseForm() {
+  const router = useRouter();
+
+  // console.log('user', user);
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
+
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log(e);
+
+    const data = {
+      name: nameRef?.current?.value ?? '',
+      amount: amountRef?.current?.value ?? 0,
+    };
+    const res = await fetch('/api/expense', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    // console.log(res);
+    if (res.ok) {
+      router.refresh();
+      window.my_modal_3.close();
+    }
+  };
   return (
-    <div className='card w-96 bg-primary text-primary-content m-auto my-4'>
-      <div className='card-body'>
-        <h2 className='card-title'>Card title!</h2>
-        <form>
-          <div className='form-control'>
-            <label className='label'>
-              <span className='label-text'>Email</span>
-            </label>
-            <input type='text' placeholder='email' className='input input-bordered' />
+    <>
+      <div className='form-control' id='expense-form'>
+        <label className='label'>
+          <span className='label-text'>Expense name</span>
+        </label>
+        <label className='input-group input-group-vertical input-group-lg'>
+          <input
+            ref={nameRef}
+            type='text'
+            name='expense-name'
+            placeholder='Name...'
+            className='input input-bordered input-lg'
+          />
+        </label>
+        <label className='label'>
+          <span className='label-text'>Expense amount</span>
+        </label>
+        <label className='input-group input-group-vertical input-group-lg'>
+          <div className='join'>
+            <input
+              ref={amountRef}
+              className='w-full input input-bordered input-lg join-item'
+              name='expense-amount'
+              type='number'
+              placeholder='000 000'
+            />
+            <span className='label join-item'>KRW</span>
           </div>
-          <div className='form-control'>
-            <label className='label'>
-              <span className='label-text'>Password</span>
-            </label>
-            <input type='password' placeholder='password' className='input input-bordered' />
-          </div>
-          <div className='form-control'>
-            <label className='label'>
-              <span className='label-text'>Password</span>
-            </label>
-            <input type='password' placeholder='password' className='input input-bordered' />
-          </div>
-        </form>
+        </label>
+        <button className='btn btn-primary mt-5' onClick={onSubmit}>
+          Submit
+        </button>
       </div>
-    </div>
+    </>
   );
 }
