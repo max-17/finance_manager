@@ -6,13 +6,14 @@ import Modal from './component/modal';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/route';
+import ExpenseList from './expenses/expenseList';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
-  // if (!session) {
-  //   return redirect('/api/auth/signin');
-  // }
+  if (!session) {
+    return redirect('/api/auth/signin');
+  }
   const currentUserImage = session?.user?.image!;
 
   const user = await prisma.user.findFirst({
@@ -24,6 +25,9 @@ export default async function Home() {
   const expenses = await prisma.expense.findMany({
     where: {
       userId: user?.id,
+    },
+    include: {
+      Category: true,
     },
   });
 
@@ -38,19 +42,7 @@ export default async function Home() {
       >
         <ExpenseForm />
       </Modal>
-
-      <ul className='rounded-sm'>
-        {expenses.map((expense) => (
-          <li key={expense.id} className='flex items-center justify-between p-4 border-b border-slate-300'>
-            <span>{expense.date.toLocaleString()}</span>
-            {expense.name}
-            <span className='text-primary'>
-              {'-'}
-              {expense.amount} {' KRW'}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <ExpenseList expenses={expenses} />
     </>
   );
 }

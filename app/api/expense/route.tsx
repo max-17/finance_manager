@@ -2,8 +2,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { stat } from 'fs';
-
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 
@@ -16,12 +14,23 @@ export async function POST(req: Request) {
     },
   });
 
+  const categoryId = await prisma.category.findMany({
+    where: {
+      name: data.Category,
+    },
+  });
+
   const expense = await prisma.expense.create({
     data: {
       ...data,
       user: {
         connect: {
           id: userInstance?.id,
+        },
+      },
+      Category: {
+        connect: {
+          id: categoryId[0].id,
         },
       },
     },

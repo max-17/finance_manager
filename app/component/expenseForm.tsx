@@ -1,24 +1,50 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 export default function ExpenseForm() {
+  const expenseCategories = [
+    'Housing',
+    'Transportation',
+    'Food',
+    'Healthcare',
+    'Entertainment',
+    'Utilities',
+    'Debt Payments',
+    'Shopping',
+    'Travel',
+    'Gifts and Donations',
+    'Savings',
+    'Education',
+    'Childcare',
+    'Personal Care',
+    'Insurance',
+    'Taxes',
+    'Pet Expenses',
+    'Others',
+  ];
+
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   // console.log('user', user);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
+  const categoryRef = useRef<HTMLSelectElement>(null);
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(e);
+    setLoading(true);
 
     const data = {
       name: nameRef?.current?.value ?? '',
       amount: amountRef?.current?.value ?? 0,
+      Category: categoryRef?.current?.selectedOptions[0].value ?? '',
     };
+
     const res = await fetch('/api/expense', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -28,8 +54,13 @@ export default function ExpenseForm() {
     });
     // console.log(res);
     if (res.ok) {
+      setLoading(false);
       router.refresh();
       window.my_modal_3.close();
+      //reset form
+      nameRef.current.value = '';
+      amountRef.current.value = '';
+      categoryRef.current.selectedIndex = 0;
     }
   };
   return (
@@ -38,32 +69,42 @@ export default function ExpenseForm() {
         <label className='label'>
           <span className='label-text'>Expense name</span>
         </label>
-        <label className='input-group input-group-vertical input-group-lg'>
-          <input
-            ref={nameRef}
-            type='text'
-            name='expense-name'
-            placeholder='Name...'
-            className='input input-bordered input-lg'
-          />
-        </label>
+        <input
+          ref={nameRef}
+          type='text'
+          name='expense-name'
+          placeholder='Name...'
+          className='input input-bordered input-lg'
+        />
         <label className='label'>
           <span className='label-text'>Expense amount</span>
         </label>
-        <label className='input-group input-group-vertical input-group-lg'>
-          <div className='join'>
-            <input
-              ref={amountRef}
-              className='w-full input input-bordered input-lg join-item'
-              name='expense-amount'
-              type='number'
-              placeholder='000 000'
-            />
-            <span className='label join-item'>KRW</span>
-          </div>
+        <label className='input-group'>
+          <input
+            ref={amountRef}
+            className='w-full input input-bordered input-lg join-item'
+            name='expense-amount'
+            type='number'
+            placeholder='000 000'
+          />
+          <span className='label join-item'>KRW</span>
         </label>
+
+        <label className='label'>
+          <span className='label-text'>Expense category</span>
+        </label>
+        <select className='select select-bordered w-full input-lg' ref={categoryRef}>
+          <option value='Select expense category'>
+            Select expense category
+          </option>
+          {expenseCategories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
         <button className='btn btn-primary mt-5' onClick={onSubmit}>
-          Submit
+          {loading ? <span className='loading loading-spinner loading-md'></span> : 'Submit'}
         </button>
       </div>
     </>
